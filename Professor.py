@@ -1,0 +1,47 @@
+from User import User
+from Enrollment import Enrollment
+
+
+class Professor(User):
+
+    def __init__(self, user_id, name, date_birth, email, password,
+                 professor_id, department, specialization, system):
+
+        super().__init__(user_id, name, date_birth, email, password)
+
+        self.professor_id = professor_id
+        self.department = department
+        self.specialization = specialization
+        self.system = system
+
+    def view_students(self):
+
+        students = []
+
+        for enrollment in self.system.enrollments:
+
+            if enrollment.course.professor == self:
+
+                if enrollment.student not in students:
+                    students.append(enrollment.student)
+
+        return students
+
+    def view_courses(self):
+
+        courses = []
+
+        for course in self.system.courses:
+
+            if course.professor == self:
+                courses.append(course)
+
+        return courses
+
+    def add_grade(self, enrollment, grade):
+
+        enrollment.grade = grade
+
+    def update_grade(self, enrollment, new_grade):
+
+        enrollment.grade = new_grade
