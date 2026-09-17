@@ -1,7 +1,4 @@
 from User import User
-from Enrollment import Enrollment
-
-
 class Professor(User):
 
     def __init__(self, user_id, name, date_birth, email, password,
@@ -39,9 +36,13 @@ class Professor(User):
         return courses
 
     def add_grade(self, enrollment, grade):
+        from DataBase.Enrollment_db import update_grade
 
         enrollment.grade = grade
+        update_grade(enrollment.enrollment_id, grade)
 
     def update_grade(self, enrollment, new_grade):
+        from DataBase.Enrollment_db import update_grade
 
         enrollment.grade = new_grade
+        update_grade(enrollment.enrollment_id, new_grade)

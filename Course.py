@@ -12,10 +12,16 @@ class Course:
         self.professor = None
 
     def assign_professor(self, professor):
+        from DataBase.Course_db import update_professor
+
         self.professor = professor
+        update_professor(self.course_id, professor.professor_id)
 
     def remove_professor(self):
+        from DataBase.Course_db import remove_professor
+
         self.professor = None
+        remove_professor(self.course_id)
 
     def view_course_info(self):
 

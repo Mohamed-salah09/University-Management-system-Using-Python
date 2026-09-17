@@ -8,6 +8,7 @@ class EnrollmentStatus(Enum):
 
 
 class Enrollment:
+
     def __init__(self, enrollment_id, student, course, semester):
         self.enrollment_id = enrollment_id
         self.student = student
@@ -17,7 +18,10 @@ class Enrollment:
         self.status = EnrollmentStatus.ACTIVE
 
     def update_status(self, status):
+        from DataBase.Enrollment_db import update_status
+
         self.status = status
+        update_status(self.enrollment_id, status)
 
     def view_enrollment_info(self):
         return {
@@ -28,4 +32,3 @@ class Enrollment:
             "grade": self.grade,
             "status": self.status.value
         }
-    

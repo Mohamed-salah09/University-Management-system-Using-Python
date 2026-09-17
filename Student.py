@@ -1,5 +1,5 @@
-from User import *
-from Enrollment import *
+from User import User
+from Enrollment import Enrollment, EnrollmentStatus
 
 
 class Student(User):
@@ -15,6 +15,7 @@ class Student(User):
         self.system = system
 
     def enroll_course(self, enrollment_id, course, semester):
+        from DataBase.Enrollment_db import add_enrollment
 
         enrollment = Enrollment(
             enrollment_id,
@@ -24,6 +25,7 @@ class Student(User):
         )
 
         self.system.enrollments.append(enrollment)
+        add_enrollment(enrollment)
 
     def drop_course(self, course):
 
@@ -31,6 +33,9 @@ class Student(User):
 
             if enrollment.student == self and enrollment.course == course:
                 enrollment.update_status(EnrollmentStatus.DROPPED)
+                return True
+
+        return False
 
     def view_grades(self):
 
@@ -74,7 +79,7 @@ class Student(User):
 
             if enrollment.student == self:
 
-              if enrollment.grade in grade_points:
+                if enrollment.grade in grade_points:
 
                     credit = enrollment.course.credits
 

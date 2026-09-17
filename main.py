@@ -1,130 +1,243 @@
 from Studentmanagementsystem import StudentManagementSystem
+from User import User
 from Student import Student
 from Professor import Professor
+from Admin import Admin
 from Course import Course
 from Department import Department
-from Admin import Admin
+from DataBase.Admin_db import add_admin
 
 
-system = StudentManagementSystem()
+def main():
 
-admin = Admin(
-    1,
-    "Admin",
-    "1980-01-01",
-    "admin@test.com",
-    "1234",
-    system
-)
+    print("========== START TEST ==========\n")
 
+    # ==========================================
+    # 1. Create System
+    # ==========================================
 
-# =========================
-# Test Department
-# =========================
+    system = StudentManagementSystem()
 
-department = Department(
-    1,
-    "Computer Science",
-    "CS Department",
-    system
-)
-
-admin.add_department(department)
-
-print("Departments:", len(system.departments))
+    print("System created successfully.\n")
 
 
-# =========================
-# Test Student
-# =========================
+    # ==========================================
+    # 2. Create Department
+    # ==========================================
 
-student = Student(
-    1,
-    "Mohamed",
-    "2005-01-01",
-    "mohamed@test.com",
-    "1234",
-    1001,
-    3,
-    department,
-    system
-)
+    department = Department(
+        1,
+        "Computer Science",
+        "Computer Science Department",
+        system
+    )
 
-admin.add_student(student)
+    admin = Admin(
+        1,
+        "Admin",
+        "1990-01-01",
+        "admin@gmail.com",
+        "1234",3008,
+        system
+    )
 
-print("Students:", len(system.students))
+    admin.add_department(department)
 
-
-# =========================
-# Test Professor
-# =========================
-
-professor = Professor(
-    2,
-    "Dr Ahmed",
-    "1980-01-01",
-    "ahmed@test.com",
-    "1234",
-    2001,
-    department,
-    "Software Engineering",
-    system
-)
-
-admin.add_professor(professor)
-
-print("Professors:", len(system.professors))
+    print("Department added.")
 
 
-# =========================
-# Test Course
-# =========================
+    # ==========================================
+    # 3. Add Admin to Database
+    # ==========================================
 
-course = Course(
-    1,
-    "Software Engineering",
-    "CS301",
-    3,
-    "Software Engineering Course",
-    department
-)
+    from DataBase.User_db import add_user
 
-admin.add_course(course)
+    add_user(admin)
+    add_admin(admin)
 
-print("Courses:", len(system.courses))
+    print("Admin added to database.")
 
 
-# =========================
-# Test Remove
-# =========================
+    # ==========================================
+    # 4. Create Student
+    # ==========================================
 
-print("\nRemoving student...")
+    student = Student(
+        2,
+        "Mohamed Salah",
+        "2005-01-01",
+        "mohamed@gmail.com",
+        "1234",
+        1001,
+        3,
+        department,
+        system
+    )
 
-result = admin.remove_student(1001)
+    add_user(student)
+    admin.add_student(student)
 
-print("Remove result:", result)
-print("Students:", len(system.students))
-
-
-print("\nRemoving professor...")
-
-result = admin.remove_professor(2001)
-
-print("Remove result:", result)
-print("Professors:", len(system.professors))
-
-
-print("\nRemoving course...")
-
-result = admin.remove_course(1)
-
-print("Remove result:", result)
-print("Courses:", len(system.courses))
+    print("Student added.")
 
 
-print("\nRemoving department...")
+    # ==========================================
+    # 5. Create Professor
+    # ==========================================
 
-result = admin.remove_department(1)
+    professor = Professor(
+        3,
+        "Dr. Ahmed",
+        "1980-01-01",
+        "ahmed@gmail.com",
+        "1234",
+        2001,
+        department,
+        "Software Engineering",
+        system
+    )
 
-print("Remove result:", result)
-print("Departments:", len(system.departments))
+    add_user(professor)
+    admin.add_professor(professor)
+
+    print("Professor added.")
+
+
+    # ==========================================
+    # 6. Create Course
+    # ==========================================
+
+    course = Course(
+        101,
+        "Software Engineering",
+        "SWE101",
+        3,
+        "Introduction to Software Engineering",
+        department
+    )
+
+    admin.add_course(course)
+
+    print("Course added.")
+
+
+    # ==========================================
+    # 7. Assign Professor to Course
+    # ==========================================
+
+    course.assign_professor(professor)
+
+    print("Professor assigned to course.")
+
+
+    # ==========================================
+    # 8. Student Enrolls in Course
+    # ==========================================
+
+    student.enroll_course(
+        5001,
+        course,
+        "Fall 2026"
+    )
+
+    print("Student enrolled in course.")
+
+
+    # ==========================================
+    # 9. View Student Courses
+    # ==========================================
+
+    print("\nStudent Courses:")
+
+    for c in student.view_courses():
+        print(c.course_name)
+
+
+    # ==========================================
+    # 10. Professor Views Students
+    # ==========================================
+
+    print("\nProfessor Students:")
+
+    for s in professor.view_students():
+        print(s.name)
+
+
+    # ==========================================
+    # 11. Professor Adds Grade
+    # ==========================================
+
+    enrollment = system.enrollments[0]
+
+    professor.add_grade(enrollment, "A")
+
+    print("\nGrade added:", enrollment.grade)
+
+
+    # ==========================================
+    # 12. Student Views Grades
+    # ==========================================
+
+    print("Student Grades:")
+
+    for grade in student.view_grades():
+        print(grade)
+
+
+    # ==========================================
+    # 13. Calculate GPA
+    # ==========================================
+
+    print("\nStudent GPA:", student.calculate_GPA())
+
+
+    # ==========================================
+    # 14. Student Drops Course
+    # ==========================================
+
+    student.drop_course(course)
+
+    print("\nCourse dropped.")
+
+    print("Enrollment status:", enrollment.status.value)
+
+
+    # ==========================================
+    # 15. Test Login
+    # ==========================================
+
+    print("\nLogin Test:")
+
+    student.login()
+
+    print("\nWrong Login Test:")
+
+    wrong_student = User(
+        999,
+        "Test",
+        "2000-01-01",
+        "wrong@gmail.com",
+        "wrong"
+    )
+
+    wrong_student.login()
+
+
+    # ==========================================
+    # 16. Database Users Test
+    # ==========================================
+
+    from DataBase.User_db import get_all_users
+
+    users = get_all_users()
+
+    print("\nUsers in Database:")
+
+    for user in users:
+        print(user.user_id, user.name, user.email)
+
+
+    print("\n========== TEST FINISHED ==========")
+
+
+if __name__ == "__main__":
+    main()

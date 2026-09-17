@@ -1,9 +1,10 @@
 from User import User
 class Admin(User):
 
-    def __init__(self, user_id, name, date_birth, email, password, system):
+    def __init__(self, user_id, name, date_birth, email, password,admin_id, system):
         super().__init__(user_id, name, date_birth, email, password)
         self.system = system
+        self.admin_id=admin_id
         
     def add_student(self, student):
         from DataBase.Student_db import add_student
